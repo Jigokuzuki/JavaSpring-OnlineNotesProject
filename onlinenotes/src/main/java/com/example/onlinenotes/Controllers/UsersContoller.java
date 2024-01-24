@@ -47,7 +47,7 @@ public class UsersContoller {
         return ResponseEntity.ok(EntityExtensions.AsDto(user));
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<?> createUser(@RequestBody CreateUserDto userDto) {
         try {
             User existingUser = usersRepository.getUserByEmail(userDto.Email());
@@ -148,7 +148,7 @@ public class UsersContoller {
     }
 
     private String generateToken(User user) {
-        String secretKey = "41894612893471256123815412894124198218023126754102";
+        String secretKey = "CBNSJKgapihgnaiopsujxJ29N9FUJ39JAOF";
         Date now = new Date();
         Date expiration = new Date(now.getTime() + 3600000);
 

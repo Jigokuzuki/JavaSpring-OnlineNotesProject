@@ -31,14 +31,7 @@ public class JpaUsersRepositories implements IUsersRepositories {
 
     @Override
     public void create(User user) {
-
-        entityManager.createQuery(
-                "INSERT INTO User (Id, FirstName, Surname, Email, Password) VALUES (:id, :firstname, :surname, :email, :password)")
-                .setParameter("id", user.getId())
-                .setParameter("firstname", user.getFirstName())
-                .setParameter("surname", user.getSurname())
-                .setParameter("email", user.getEmail())
-                .setParameter("password", user.getPassword()).executeUpdate();
+        entityManager.persist(user);
     }
 
     @Override
@@ -62,8 +55,10 @@ public class JpaUsersRepositories implements IUsersRepositories {
 
     @Override
     public User getUserByEmail(String email) {
-        return entityManager.createQuery("SELECT u from User u WHERE u.Email = :email", User.class)
+        List<User> resultList = entityManager.createQuery("SELECT u from User u WHERE u.Email = :email", User.class)
                 .setParameter("email", email)
-                .getSingleResult();
+                .getResultList();
+
+        return resultList.isEmpty() ? null : resultList.get(0);
     }
 }

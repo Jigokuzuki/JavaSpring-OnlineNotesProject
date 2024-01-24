@@ -17,7 +17,6 @@ public class UserNotes {
         return Id;
     }
 
-    @Column(name = "NoteId")
     @ManyToOne
     @JoinColumn(name = "Notes", referencedColumnName = "Id")
     private Note NoteId;
@@ -30,7 +29,6 @@ public class UserNotes {
         return NoteId;
     }
 
-    @Column(name = "UserId")
     @ManyToOne
     @JoinColumn(name = "Users", referencedColumnName = "Id")
     private User UserId;
