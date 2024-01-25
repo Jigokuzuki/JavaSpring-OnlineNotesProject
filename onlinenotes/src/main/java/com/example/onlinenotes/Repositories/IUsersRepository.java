@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.example.onlinenotes.Entities.User;
 
-public interface IUsersRepositories {
+public interface IUsersRepository {
 
     List<User> getAll();
 

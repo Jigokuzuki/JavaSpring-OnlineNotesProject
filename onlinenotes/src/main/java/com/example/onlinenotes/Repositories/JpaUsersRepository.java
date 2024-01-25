@@ -12,7 +12,7 @@ import jakarta.transaction.Transactional;
 
 @Repository
 @Transactional
-public class JpaUsersRepositories implements IUsersRepositories {
+public class JpaUsersRepository implements IUsersRepository {
     @PersistenceContext
     private EntityManager entityManager;
 

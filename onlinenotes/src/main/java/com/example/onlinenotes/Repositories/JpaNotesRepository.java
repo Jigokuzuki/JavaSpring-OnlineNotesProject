@@ -4,8 +4,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.onlinenotes.Entities.Note;
-
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
 import java.util.List;
@@ -25,21 +25,18 @@ public class JpaNotesRepository implements INotesRepository {
 
     @Override
     public Note getById(int id) {
-        return entityManager.createQuery("SELECT n from Note n WHERE n.Id = :id", Note.class)
-                .setParameter("id", id)
-                .getSingleResult();
+        try {
+            return entityManager.createQuery("SELECT n from Note n WHERE n.id = :id", Note.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override
     public void create(Note note) {
-
-        entityManager.createQuery(
-                "INSERT INTO Note (Id, Title, Content, Category, IsFavorite) VALUES (:id, :title, :content, :category, :isfavorite)")
-                .setParameter("id", note.getId())
-                .setParameter("title", note.getTitle())
-                .setParameter("content", note.getContent())
-                .setParameter("category", note.getCategory())
-                .setParameter("isfavorite", note.getIsFavorite()).executeUpdate();
+        entityManager.persist(note);
     }
 
     @Override

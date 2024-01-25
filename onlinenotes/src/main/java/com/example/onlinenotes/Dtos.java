@@ -2,9 +2,6 @@ package com.example.onlinenotes;
 
 import java.time.OffsetDateTime;
 
-import com.example.onlinenotes.Entities.Note;
-import com.example.onlinenotes.Entities.User;
-
 import jakarta.annotation.Nonnull;
 
 public class Dtos {
@@ -75,18 +72,18 @@ public class Dtos {
 
         public record UserNotesDto(
                         int Id,
-                        User UserId,
-                        Note NoteId) {
+                        int UserId,
+                        int NoteId) {
         }
 
         public record CreateUserNotesDto(
-                        User UserId,
-                        Note NoteId) {
+                        int UserId,
+                        int NoteId) {
         }
 
         public record UpdateUserNotesDto(
-                        User UserId,
-                        Note NoteId) {
+                        int UserId,
+                        int NoteId) {
         }
 
 }

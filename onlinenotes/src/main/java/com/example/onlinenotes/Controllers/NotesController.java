@@ -41,13 +41,12 @@ public class NotesController {
         Note note = notesRepository.getById(id);
 
         if (note == null) {
+            System.out.println(note);
             return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.ok(EntityExtensions.AsDto(note));
     }
-
-    // GetByUserIdAsync
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<NoteDto>> getUserNotes(@PathVariable int userId) {
@@ -63,7 +62,7 @@ public class NotesController {
         return ResponseEntity.ok(userNotes);
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<?> createNote(@RequestBody CreateNoteDto noteDto) {
         try {
             if (StringUtils.isEmpty(noteDto.Title())) {
@@ -92,6 +91,7 @@ public class NotesController {
 
             note.setCreatedDate(note.getCreatedDate().minusNanos(note.getCreatedDate().getNano()));
             note.setModifiedDate(note.getModifiedDate().minusNanos(note.getModifiedDate().getNano()));
+            notesRepository.create(note);
 
             URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                     .path("/{id}")
@@ -157,4 +157,5 @@ public class NotesController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
         }
     }
+
 }

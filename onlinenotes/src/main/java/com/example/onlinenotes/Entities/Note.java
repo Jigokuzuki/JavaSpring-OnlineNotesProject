@@ -11,6 +11,7 @@ public class Note {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private int Id;
 
     public void setId(int Id) {

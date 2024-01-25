@@ -15,7 +15,7 @@ import com.example.onlinenotes.Dtos.LoginUserDto;
 import com.example.onlinenotes.Dtos.UserDto;
 import com.example.onlinenotes.Entities.EntityExtensions;
 import com.example.onlinenotes.Entities.User;
-import com.example.onlinenotes.Repositories.IUsersRepositories;
+import com.example.onlinenotes.Repositories.IUsersRepository;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -27,7 +27,7 @@ import io.micrometer.common.util.StringUtils;
 public class UsersContoller {
 
     @Autowired
-    private IUsersRepositories usersRepository;
+    private IUsersRepository usersRepository;
 
     @GetMapping
     public List<UserDto> getAllNotes() {

@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "UserNotes")
 public class UserNotes {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
 
     public void setId(int Id) {
@@ -17,27 +17,25 @@ public class UserNotes {
         return Id;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "Notes", referencedColumnName = "Id")
-    private Note NoteId;
+    @Column(name = "NoteId")
+    private int NoteId;
 
-    public void setNoteId(Note NoteId) {
+    public void setNoteId(int NoteId) {
         this.NoteId = NoteId;
     }
 
-    public Note getNoteId() {
+    public int getNoteId() {
         return NoteId;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "Users", referencedColumnName = "Id")
-    private User UserId;
+    @Column(name = "UserId")
+    private int UserId;
 
-    public void setUserId(User UserId) {
+    public void setUserId(int UserId) {
         this.UserId = UserId;
     }
 
-    public User getUserId() {
+    public int getUserId() {
         return UserId;
     }
 }
