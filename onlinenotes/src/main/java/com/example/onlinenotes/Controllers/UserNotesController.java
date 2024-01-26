@@ -19,12 +19,13 @@ import com.example.onlinenotes.Entities.UserNotes;
 import com.example.onlinenotes.Repositories.IUserNotesRepository;
 
 @RestController
-@RequestMapping("/usernotes")
+@RequestMapping("/UserNotes")
 public class UserNotesController {
 
     @Autowired
     private IUserNotesRepository usernotesRepository;
 
+    @CrossOrigin(origins = "http://localhost:5238")
     @GetMapping
     public List<UserNotesDto> getAllNotes() {
         return usernotesRepository.getAll().stream()
@@ -32,6 +33,7 @@ public class UserNotesController {
                 .collect(Collectors.toList());
     }
 
+    @CrossOrigin(origins = "http://localhost:5238")
     @GetMapping("/{id}")
     public ResponseEntity<UserNotesDto> getNoteById(@PathVariable int id) {
         UserNotes usernotes = usernotesRepository.getById(id);
@@ -43,6 +45,7 @@ public class UserNotesController {
         return ResponseEntity.ok(EntityExtensions.AsDto(usernotes));
     }
 
+    @CrossOrigin(origins = "http://localhost:5238")
     @GetMapping("/users/{userId}")
     public ResponseEntity<?> getUserNotesByUserId(@PathVariable int userId) {
         List<UserNotes> userNotes = usernotesRepository.getByUserId(userId);
@@ -54,6 +57,7 @@ public class UserNotesController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5238")
     @PostMapping
     public ResponseEntity<?> createUserNotes(@RequestBody CreateUserNotesDto userNotesDto) {
         try {
@@ -74,6 +78,7 @@ public class UserNotesController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5238")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUserNotes(@PathVariable int id, @RequestBody UpdateUserNotesDto updateUserNoteDto) {
         try {
@@ -94,6 +99,7 @@ public class UserNotesController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5238")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUserNotes(@PathVariable int id) {
         try {
@@ -110,6 +116,7 @@ public class UserNotesController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5238")
     @DeleteMapping("/{userId}/{noteId}")
     public ResponseEntity<?> deleteByNoteAndUser(@PathVariable int userId, @PathVariable int noteId) {
         try {

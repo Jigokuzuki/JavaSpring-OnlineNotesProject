@@ -29,6 +29,7 @@ public class NotesController {
     @Autowired
     private INotesRepository notesRepository;
 
+    @CrossOrigin(origins = "http://localhost:5238")
     @GetMapping
     public List<NoteDto> getAllNotes() {
         return notesRepository.getAll().stream()
@@ -36,6 +37,7 @@ public class NotesController {
                 .collect(Collectors.toList());
     }
 
+    @CrossOrigin(origins = "http://localhost:5238")
     @GetMapping("/{id}")
     public ResponseEntity<NoteDto> getNoteById(@PathVariable int id) {
         Note note = notesRepository.getById(id);
@@ -48,6 +50,7 @@ public class NotesController {
         return ResponseEntity.ok(EntityExtensions.AsDto(note));
     }
 
+    @CrossOrigin(origins = "http://localhost:5238")
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<NoteDto>> getUserNotes(@PathVariable int userId) {
         List<NoteDto> userNotes = notesRepository.getNotesByUserId(userId)
@@ -62,6 +65,7 @@ public class NotesController {
         return ResponseEntity.ok(userNotes);
     }
 
+    @CrossOrigin(origins = "http://localhost:5238")
     @PostMapping
     public ResponseEntity<?> createNote(@RequestBody CreateNoteDto noteDto) {
         try {
@@ -104,6 +108,7 @@ public class NotesController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5238")
     @PutMapping("/{id}")
     public ResponseEntity<?> editNote(@PathVariable int id, @RequestBody UpdateNoteDto updateNoteDto) {
         try {
@@ -143,6 +148,7 @@ public class NotesController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5238")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteNote(@PathVariable int id) {
         try {

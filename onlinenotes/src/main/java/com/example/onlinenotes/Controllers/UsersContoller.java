@@ -3,8 +3,6 @@ package com.example.onlinenotes.Controllers;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import javax.crypto.SecretKey;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +13,9 @@ import com.example.onlinenotes.Dtos.LoginUserDto;
 import com.example.onlinenotes.Dtos.UserDto;
 import com.example.onlinenotes.Entities.EntityExtensions;
 import com.example.onlinenotes.Entities.User;
+import com.example.onlinenotes.Functions.*;
 import com.example.onlinenotes.Repositories.IUsersRepository;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import io.micrometer.common.util.StringUtils;
 
 @RestController
@@ -29,6 +25,16 @@ public class UsersContoller {
     @Autowired
     private IUsersRepository usersRepository;
 
+    @Autowired
+    JwtTokenGenerator tokenGenerator;
+
+    @Autowired
+    SpecialCharacter specialCharacter;
+
+    @Autowired
+    JwtTokenValidator tokenValidator;
+
+    @CrossOrigin(origins = "http://localhost:5238")
     @GetMapping
     public List<UserDto> getAllNotes() {
         return usersRepository.getAll().stream()
@@ -36,6 +42,7 @@ public class UsersContoller {
                 .collect(Collectors.toList());
     }
 
+    @CrossOrigin(origins = "http://localhost:5238")
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getNoteById(@PathVariable int id) {
         User user = usersRepository.getById(id);
@@ -47,6 +54,7 @@ public class UsersContoller {
         return ResponseEntity.ok(EntityExtensions.AsDto(user));
     }
 
+    @CrossOrigin(origins = "http://localhost:5238")
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody CreateUserDto userDto) {
         try {
@@ -73,7 +81,7 @@ public class UsersContoller {
             }
 
             if (StringUtils.isEmpty(userDto.Password()) || userDto.Password().length() < 8
-                    || !containsSpecialCharacter(userDto.Password())) {
+                    || !specialCharacter.containsSpecialCharacter(userDto.Password())) {
                 return ResponseEntity.badRequest()
                         .body(Map.of("message", "Invalid password!"));
             }
@@ -85,7 +93,7 @@ public class UsersContoller {
             user.setPassword(userDto.Password());
             usersRepository.create(user);
 
-            String token = generateToken(user);
+            String token = tokenGenerator.generateToken(user);
 
             return ResponseEntity.ok(Map.of("id", user.getId(), "token", token));
         } catch (Exception e) {
@@ -93,6 +101,7 @@ public class UsersContoller {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5238")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable int id) {
         try {
@@ -108,14 +117,16 @@ public class UsersContoller {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5238")
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginUserDto userDto) {
         try {
+
             User user = usersRepository.getUserByEmail(userDto.Email());
 
             if (user == null) {
                 return ResponseEntity.badRequest()
-                        .body(Map.of("message", "User does not exist!"));
+                        .body(Map.of("message", "User not found"));
             }
 
             if (StringUtils.isEmpty(userDto.Email())) {
@@ -124,46 +135,17 @@ public class UsersContoller {
             }
 
             if (StringUtils.isEmpty(userDto.Password()) || userDto.Password().length() < 8
-                    || !containsSpecialCharacter(userDto.Password())) {
+                    || !specialCharacter.containsSpecialCharacter(userDto.Password())) {
                 return ResponseEntity.badRequest()
                         .body(Map.of("message", "Invalid password!"));
             }
 
-            String token = generateToken(user);
+            String token = tokenGenerator.generateToken(user);
 
             return ResponseEntity.ok(Map.of("id", user.getId(), "token", token));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
         }
-    }
-
-    private boolean containsSpecialCharacter(String password) {
-        String specialChars = "!@#$%^&*()-_=+[]{}|;:'\",.<>?/";
-        for (char c : specialChars.toCharArray()) {
-            if (password.contains(String.valueOf(c))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private String generateToken(User user) {
-        String secretKey = "CBNSJKgapihgnaiopsujxJ29N9FUJ39JAOF";
-        Date now = new Date();
-        Date expiration = new Date(now.getTime() + 3600000);
-
-        byte[] keyBytes = secretKey.getBytes();
-        SecretKey key = Keys.hmacShaKeyFor(keyBytes);
-
-        return Jwts.builder()
-                .setSubject(Integer.toString(user.getId()))
-                .claim("aud",
-                        List.of("http://localhost:6044", "https://localhost:44391", "http://localhost:5046",
-                                "https://localhost:7119"))
-                .setIssuedAt(now)
-                .setExpiration(expiration)
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
     }
 
 }

@@ -61,11 +61,11 @@ public class JpaNotesRepository implements INotesRepository {
     @Override
     public List<Note> getNotesByUserId(int userId) {
         List<Integer> userNoteIds = entityManager.createQuery(
-                "SELECT un.noteId FROM UserNotes un WHERE un.userId = :userId", Integer.class)
+                "SELECT un.NoteId FROM UserNotes un WHERE un.UserId = :userId", Integer.class)
                 .setParameter("userId", userId)
                 .getResultList();
 
-        return entityManager.createQuery("SELECT n FROM Note n WHERE n.id IN :noteIds", Note.class)
+        return entityManager.createQuery("SELECT n FROM Note n WHERE n.Id IN :noteIds", Note.class)
                 .setParameter("noteIds", userNoteIds)
                 .getResultList();
     }
