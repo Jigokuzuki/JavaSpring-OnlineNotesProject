@@ -18,6 +18,7 @@ import com.example.onlinenotes.Dtos.NoteDto;
 import com.example.onlinenotes.Dtos.UpdateNoteDto;
 import com.example.onlinenotes.Entities.EntityExtensions;
 import com.example.onlinenotes.Entities.Note;
+import com.example.onlinenotes.Functions.JwtTokenValidator;
 import com.example.onlinenotes.Repositories.INotesRepository;
 
 import io.micrometer.common.util.StringUtils;
@@ -28,6 +29,9 @@ public class NotesController {
 
     @Autowired
     private INotesRepository notesRepository;
+
+    @Autowired
+    private JwtTokenValidator tokenValidator;
 
     @CrossOrigin(origins = "http://localhost:5238")
     @GetMapping
@@ -67,8 +71,16 @@ public class NotesController {
 
     @CrossOrigin(origins = "http://localhost:5238")
     @PostMapping
-    public ResponseEntity<?> createNote(@RequestBody CreateNoteDto noteDto) {
+    public ResponseEntity<?> createNote(@RequestBody CreateNoteDto noteDto,
+            @RequestHeader Map<String, String> headers) {
+
+        ResponseEntity<?> tokenResponse = tokenValidator.validateToken(headers);
+        if (tokenResponse != null) {
+            return tokenResponse;
+        }
+
         try {
+
             if (StringUtils.isEmpty(noteDto.Title())) {
                 return ResponseEntity.badRequest()
                         .body(Map.of("message", "Title cannot be empty or longer than 10 characters!"));
@@ -110,7 +122,14 @@ public class NotesController {
 
     @CrossOrigin(origins = "http://localhost:5238")
     @PutMapping("/{id}")
-    public ResponseEntity<?> editNote(@PathVariable int id, @RequestBody UpdateNoteDto updateNoteDto) {
+    public ResponseEntity<?> editNote(@PathVariable int id, @RequestBody UpdateNoteDto updateNoteDto,
+            @RequestHeader Map<String, String> headers) {
+
+        ResponseEntity<?> tokenResponse = tokenValidator.validateToken(headers);
+        if (tokenResponse != null) {
+            return tokenResponse;
+        }
+
         try {
             Note existingNote = notesRepository.getById(id);
 
@@ -150,7 +169,14 @@ public class NotesController {
 
     @CrossOrigin(origins = "http://localhost:5238")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteNote(@PathVariable int id) {
+    public ResponseEntity<?> deleteNote(@PathVariable int id,
+            @RequestHeader Map<String, String> headers) {
+
+        ResponseEntity<?> tokenResponse = tokenValidator.validateToken(headers);
+        if (tokenResponse != null) {
+            return tokenResponse;
+        }
+
         try {
             Note note = notesRepository.getById(id);
 
