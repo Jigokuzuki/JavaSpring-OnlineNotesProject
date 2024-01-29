@@ -26,13 +26,10 @@ public class UsersContoller {
     private IUsersRepository usersRepository;
 
     @Autowired
-    JwtTokenGenerator tokenGenerator;
+    private JwtTokenGenerator tokenGenerator;
 
     @Autowired
-    SpecialCharacter specialCharacter;
-
-    @Autowired
-    JwtTokenValidator tokenValidator;
+    private SpecialCharacter specialCharacter;
 
     @CrossOrigin(origins = "http://localhost:5238")
     @GetMapping
@@ -83,7 +80,8 @@ public class UsersContoller {
             if (StringUtils.isEmpty(userDto.Password()) || userDto.Password().length() < 8
                     || !specialCharacter.containsSpecialCharacter(userDto.Password())) {
                 return ResponseEntity.badRequest()
-                        .body(Map.of("message", "Invalid password!"));
+                        .body(Map.of("message",
+                                "Invalid Password! Password must be at least 8 characters long and contain at least one special character."));
             }
 
             User user = new User();
@@ -137,7 +135,8 @@ public class UsersContoller {
             if (StringUtils.isEmpty(userDto.Password()) || userDto.Password().length() < 8
                     || !specialCharacter.containsSpecialCharacter(userDto.Password())) {
                 return ResponseEntity.badRequest()
-                        .body(Map.of("message", "Invalid password!"));
+                        .body(Map.of("message",
+                                "Invalid Password!"));
             }
 
             String token = tokenGenerator.generateToken(user);
