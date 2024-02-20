@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 @Transactional
-public class JpaNotesRepository implements INotesRepository {
+public class JdbcNotesRepository implements INotesRepository {
 
     @PersistenceContext
     private EntityManager entityManager;
