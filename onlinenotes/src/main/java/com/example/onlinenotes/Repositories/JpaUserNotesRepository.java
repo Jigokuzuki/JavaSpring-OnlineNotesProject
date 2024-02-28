@@ -13,7 +13,7 @@ import jakarta.transaction.Transactional;
 
 @Repository
 @Transactional
-public class JdbcUserNotesRepository implements IUserNotesRepository {
+public class JpaUserNotesRepository implements IUserNotesRepository {
 
     @PersistenceContext
     private EntityManager entityManager;
